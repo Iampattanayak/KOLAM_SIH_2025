@@ -2,6 +2,7 @@ import { useState } from "react";
 import { KolamCanvas } from "@/components/KolamCanvas";
 import { ControlPanel } from "@/components/ControlPanel";
 import { InfoPanel } from "@/components/InfoPanel";
+import { MLVariationsPanel } from "@/components/MLVariationsPanel";
 import { KolamGenerator } from "@/lib/kolamGenerator";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Download } from "lucide-react";
@@ -42,6 +43,20 @@ const Index = () => {
     });
   };
 
+  const handleApplyVariation = (variation: any) => {
+    setPatternType(variation.type);
+    setGridSize(variation.parameters.gridSize);
+    setSymmetryType(variation.parameters.symmetry);
+    
+    // Generate the pattern with new parameters
+    const newPattern = KolamGenerator.generatePattern(
+      variation.type, 
+      variation.parameters.gridSize, 
+      variation.parameters.symmetry
+    );
+    setCurrentPattern(newPattern);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -75,7 +90,7 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 min-h-[calc(100vh-12rem)]">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 min-h-[calc(100vh-12rem)]">
           {/* Control Panel */}
           <div className="lg:col-span-1 space-y-4">
             <ControlPanel
@@ -113,6 +128,14 @@ const Index = () => {
               pattern={currentPattern}
               onExport={exportPattern}
               onShare={sharePattern}
+            />
+          </div>
+
+          {/* ML Variations Panel */}
+          <div className="lg:col-span-1">
+            <MLVariationsPanel
+              pattern={currentPattern}
+              onApplyVariation={handleApplyVariation}
             />
           </div>
         </div>
